@@ -5,9 +5,61 @@ Tokio Easy Loop
 :Status: Beta
 :Documentation: http://docs.rs/tk-easyloop/
 
+A main loop wrapper around tokio to provide thread-local
+loop which:
 
-A wrapper around tokio easy loop to provide thread-local loop and avoid
-common ``thread 'foo' panicked at 'no Task is currently running'`` error.
+* Avoids padding a ``Handle`` in to every function
+* Mostly avoids common error: ``thread 'foo' panicked at 'no Task is
+  currently running'``, by providing convenient `run` function for all your
+  code involving futures
+
+
+Example
+=======
+
+```no_run
+extern crate futures;
+extern crate tk_easyloop;
+
+use std::time::Duration;
+use tk_easyloop::{run, timeout};
+
+fn main() {
+    run(|| {
+        // should return some future, let's use a timeout
+        timeout(Duration::new(1, 0))
+    }).unwrap();
+}
+```
+
+Multi-threaded Example
+======================
+
+This crate uses thread-local storage for storing loop, but it doesn't
+mean multi-treading doesn't work. Multiple threads can be used too.
+
+```
+extern crate tk_easyloop;
+use std::thread;
+use std::time::Duration;
+use tk_easyloop::{run, timeout};
+
+fn main() {
+    let mut threads = Vec::new();
+    for thread_no in 0..10 {
+        threads.push(thread::spawn(move || {
+            run(|| {
+                timeout(Duration::new(1, 0))
+            })
+        }))
+    }
+    for t in threads {
+        t.join().unwrap().unwrap();
+    }
+}
+```
+
+See ``examples/multi-threaded.rs`` for more comprehensive example.
 
 
 License
