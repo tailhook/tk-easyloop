@@ -1,0 +1,16 @@
+[package]
+name = "tk-easyloop"
+description = """
+    A thread local loop and other loop helpers
+"""
+license = "MIT/Apache-2.0"
+readme = "README.rst"
+keywords = ["loop", "easy", "tokio", "handle", "core"]
+homepage = "http://github.com/tailhook/tk-easyloop"
+documentation = "http://docs.rs/tk-easyloop"
+version = "0.1.0"
+authors = ["paul@colomiets.name"]
+
+[dependencies]
+lazy_static = "0.2.1"
+tokio-core = "0.1.0"
