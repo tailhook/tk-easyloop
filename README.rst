@@ -17,20 +17,21 @@ loop which:
 Example
 =======
 
-```no_run
-extern crate futures;
-extern crate tk_easyloop;
+.. code-block:: rust
 
-use std::time::Duration;
-use tk_easyloop::{run, timeout};
+    extern crate futures;
+    extern crate tk_easyloop;
 
-fn main() {
-    run(|| {
-        // should return some future, let's use a timeout
-        timeout(Duration::new(1, 0))
-    }).unwrap();
-}
-```
+    use std::time::Duration;
+    use tk_easyloop::{run, timeout};
+
+    fn main() {
+        run(|| {
+            // should return some future, let's use a timeout
+            timeout(Duration::new(1, 0))
+        }).unwrap();
+    }
+
 
 Multi-threaded Example
 ======================
@@ -38,26 +39,26 @@ Multi-threaded Example
 This crate uses thread-local storage for storing loop, but it doesn't
 mean multi-treading doesn't work. Multiple threads can be used too.
 
-```
-extern crate tk_easyloop;
-use std::thread;
-use std::time::Duration;
-use tk_easyloop::{run, timeout};
+.. code-block:: rust
 
-fn main() {
-    let mut threads = Vec::new();
-    for thread_no in 0..10 {
-        threads.push(thread::spawn(move || {
-            run(|| {
-                timeout(Duration::new(1, 0))
-            })
-        }))
+    extern crate tk_easyloop;
+    use std::thread;
+    use std::time::Duration;
+    use tk_easyloop::{run, timeout};
+
+    fn main() {
+        let mut threads = Vec::new();
+        for thread_no in 0..10 {
+            threads.push(thread::spawn(move || {
+                run(|| {
+                    timeout(Duration::new(1, 0))
+                })
+            }))
+        }
+        for t in threads {
+            t.join().unwrap().unwrap();
+        }
     }
-    for t in threads {
-        t.join().unwrap().unwrap();
-    }
-}
-```
 
 See ``examples/multi-threaded.rs`` for more comprehensive example.
 
